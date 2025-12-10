@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captura de Firma Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .instrucciones {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .instrucciones p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        .canvas-container {
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        #canvas {
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .botones {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #limpiar {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        #limpiar:hover {
+            background: #ee5a52;
+        }
+
+        #descargar {
+            background: #51cf66;
+            color: white;
+        }
+
+        #descargar:hover {
+            background: #40c057;
+        }
+
+        #preview-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #preview-container.show {
+            display: block;
+        }
+
+        #preview-container h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .mensaje-exito {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .mensaje-exito.show {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Captura de Firma Digital</h1>
+        
+        <div class="instrucciones">
+            <p><strong>Instrucciones:</strong></p>
+            <p>1. Firma en el recuadro usando el ratón o tu dedo (en pantallas táctiles)</p>
+            <p>2. Si te equivocas, pulsa "Limpiar" para borrar</p>
+            <p>3. Cuando estés satisfecho, pulsa "Descargar Firma"</p>
+            <p>4. Sube la imagen descargada al formulario de Google</p>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="canvas" width="700" height="300"></canvas>
+        </div>
+
+        <div class="botones">
+            <button id="limpiar">🗑️ Limpiar</button>
+            <button id="descargar">💾 Descargar Firma</button>
+        </div>
+
+        <div id="preview-container">
+            <h3>Vista previa de tu firma:</h3>
+            <img id="preview-image" alt="Vista previa de la firma">
+        </div>
+
+        <div class="mensaje-exito" id="mensaje">
+            ✅ ¡Firma guardada correctamente! Revisa tu carpeta de descargas.
+        </div>
+    </div>
+
+    <script>
+        // Configuración del canvas
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let dibujando = false;
+
+        // Configuración del trazo
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        // Funciones de dibujo para ratón
+        canvas.addEventListener('mousedown', (e) => {
+            dibujando = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!dibujando) return;
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            dibujando = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            dibujando = false;
+        });
+
+        // Funciones de dibujo para táctil
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            dibujando = true;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!dibujando) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.stroke();
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            dibujando = false;
+        });
+
+        // Botón limpiar
+        document.getElementById('limpiar').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('preview-container').classList.remove('show');
+            document.getElementById('mensaje').classList.remove('show');
+        });
+
+        // Botón descargar
+        document.getElementById('descargar').addEventListener('click', () => {
+            // Crear un canvas temporal con fondo blanco
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Rellenar con blanco
+            tempCtx.fillStyle = '#FFFFFF';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Copiar la firma encima
+            tempCtx.drawImage(canvas, 0, 0);
+            
+            // Convertir a imagen
+            tempCanvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                
+                // Mostrar preview
+                document.getElementById('preview-image').src = url;
+                document.getElementById('preview-container').classList.add('show');
+                
+                // Descargar
+                const link = document.createElement('a');
+                const timestamp = new Date().getTime();
+                link.download = `firma_${timestamp}.png`;
+                link.href = url;
+                link.click();
+                
+                // Mostrar mensaje de éxito
+                document.getElementById('mensaje').classList.add('show');
+                
+                // Limpiar URL después de un tiempo
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }, 'image/png');
+        });
+
+        // Ajustar canvas en dispositivos móviles
+        function ajustarCanvas() {
+            const container = document.querySelector('.canvas-container');
+            const containerWidth = container.clientWidth - 6; // Restar el borde
+            if (containerWidth < 700) {
+                canvas.width = containerWidth;
+                canvas.height = Math.floor(containerWidth * 0.43); // Mantener proporción
+            }
+        }
+
+        // Ajustar al cargar y al redimensionar
+        window.addEventListener('load', ajustarCanvas);
+        window.addEventListener('resize', ajustarCanvas);
+    </script>
+</body>
+</html>
