@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Captura de Firma Digital</title>
+    <title>Captura de Firma Digital - Salesianos Zaragoza</title>
     <style>
         * {
             margin: 0;
@@ -12,107 +12,203 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header con logo */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #E30613;
+            flex-shrink: 0;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-salesianos-img {
+            height: 45px;
+            width: auto;
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-title h1 {
+            color: #333;
+            font-size: 1.6em;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-spacer {
+            width: 200px; /* Mismo ancho aproximado que el logo para centrar el título */
+        }
+
+        /* Contenedor principal */
+        .main-content {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-y: auto;
+            min-height: 0;
         }
 
         .container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            max-width: 1400px;
             width: 100%;
+            max-height: 100%;
         }
 
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2em;
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            align-items: start;
         }
 
+        /* Columna izquierda - Instrucciones */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Instrucciones */
         .instrucciones {
-            background: #f0f4ff;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
+            background: #fff5f5;
+            border-left: 4px solid #E30613;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .instrucciones h3 {
+            color: #E30613;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
         }
 
         .instrucciones p {
             color: #555;
-            line-height: 1.6;
-            margin-bottom: 5px;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            font-size: 0.9em;
         }
 
+        .instrucciones p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Columna derecha - Firma */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Canvas */
         .canvas-container {
-            border: 3px solid #667eea;
+            border: 3px solid #E30613;
             border-radius: 10px;
-            margin: 20px 0;
             background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(227, 6, 19, 0.1);
             overflow: hidden;
+            position: relative;
         }
 
         #canvas {
             display: block;
             cursor: crosshair;
             touch-action: none;
+            width: 100%;
         }
 
+        .canvas-watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #ddd;
+            font-size: 0.7em;
+            pointer-events: none;
+        }
+
+        /* Botones */
         .botones {
             display: flex;
             gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
+            justify-content: flex-start;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: 12px 30px;
+            font-size: 15px;
+            font-weight: 600;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         #limpiar {
-            background: #ff6b6b;
-            color: white;
+            background: white;
+            color: #E30613;
+            border: 2px solid #E30613;
         }
 
         #limpiar:hover {
-            background: #ee5a52;
+            background: #E30613;
+            color: white;
         }
 
         #descargar {
-            background: #51cf66;
+            background: #E30613;
             color: white;
         }
 
         #descargar:hover {
-            background: #40c057;
+            background: #c20510;
         }
 
+        /* Preview */
         #preview-container {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
             border-radius: 10px;
+            border: 1px solid #e0e0e0;
             display: none;
         }
 
@@ -121,80 +217,222 @@
         }
 
         #preview-container h3 {
-            color: #333;
-            margin-bottom: 15px;
+            color: #E30613;
+            margin-bottom: 12px;
             text-align: center;
+            font-weight: 600;
+            font-size: 0.95em;
         }
 
         #preview-image {
             max-width: 100%;
-            border: 2px solid #dee2e6;
-            border-radius: 5px;
+            border: 2px solid #E30613;
+            border-radius: 8px;
             display: block;
             margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Mensaje de éxito */
         .mensaje-exito {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
+            background: #d4f4dd;
+            border: 1px solid #a3d9b1;
             color: #155724;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: center;
             display: none;
+            font-weight: 500;
+            font-size: 0.9em;
         }
 
         .mensaje-exito.show {
             display: block;
+            animation: slideDown 0.3s ease;
         }
 
-        @media (max-width: 600px) {
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 12px 20px;
+            font-size: 0.8em;
+            flex-shrink: 0;
+        }
+
+        .footer-logo {
+            height: 30px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .footer a {
+            color: #E30613;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .left-column {
+                order: 1;
+            }
+
+            .right-column {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-title h1 {
+                font-size: 1.2em;
+            }
+
+            .header-spacer {
+                display: none;
+            }
+
+            .logo-salesianos-img {
+                height: 40px;
+            }
+
             .container {
                 padding: 20px;
             }
 
-            h1 {
-                font-size: 1.5em;
+            .instrucciones {
+                padding: 15px;
             }
 
             button {
                 padding: 12px 20px;
                 font-size: 14px;
             }
+
+            .botones {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-salesianos-img {
+                height: 35px;
+            }
+
+            .header-title h1 {
+                font-size: 1em;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📝 Captura de Firma Digital</h1>
-        
-        <div class="instrucciones">
-            <p><strong>Instrucciones:</strong></p>
-            <p>1. Firma en el recuadro usando el ratón o tu dedo (en pantallas táctiles)</p>
-            <p>2. Si te equivocas, pulsa "Limpiar" para borrar</p>
-            <p>3. Cuando estés satisfecho, pulsa "Descargar Firma"</p>
-            <p>4. Sube la imagen descargada al formulario de Google</p>
+    <!-- Header con logo -->
+    <header class="header">
+        <div class="header-content">
+            <!-- Logo a la izquierda -->
+            <img src="logoPrincipal.png" alt="Salesianos Zaragoza" class="logo-salesianos-img">
+            
+            <!-- Título centrado -->
+            <div class="header-title">
+                <h1>Captura de Firma Digital</h1>
+            </div>
+            
+            <!-- Espaciador para centrar el título -->
+            <div class="header-spacer"></div>
         </div>
+    </header>
 
-        <div class="canvas-container">
-            <canvas id="canvas" width="700" height="300"></canvas>
-        </div>
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-wrapper">
+                <!-- Columna izquierda: Instrucciones -->
+                <div class="left-column">
+                    <div class="instrucciones">
+                        <h3>Instrucciones de uso</h3>
+                        <p>1. Firma en el recuadro usando el ratón o tu dedo (en pantallas táctiles)</p>
+                        <p>2. Si te equivocas, pulsa el botón "Limpiar" para borrar y volver a intentarlo</p>
+                        <p>3. Cuando estés satisfecho con tu firma, pulsa "Descargar Firma"</p>
+                        <p>4. Sube la imagen descargada al formulario correspondiente</p>
+                    </div>
+                </div>
 
-        <div class="botones">
-            <button id="limpiar">🗑️ Limpiar</button>
-            <button id="descargar">💾 Descargar Firma</button>
-        </div>
+                <!-- Columna derecha: Canvas y botones -->
+                <div class="right-column">
+                    <div class="canvas-container">
+                        <canvas id="canvas" width="800" height="280"></canvas>
+                    </div>
 
-        <div id="preview-container">
-            <h3>Vista previa de tu firma:</h3>
-            <img id="preview-image" alt="Vista previa de la firma">
-        </div>
+                    <div class="botones">
+                        <button id="limpiar">
+                            <span>🗑️</span>
+                            <span>Limpiar</span>
+                        </button>
+                        <button id="descargar">
+                            <span>💾</span>
+                            <span>Descargar Firma</span>
+                        </button>
+                    </div>
 
-        <div class="mensaje-exito" id="mensaje">
-            ✅ ¡Firma guardada correctamente! Revisa tu carpeta de descargas.
+                    <div id="preview-container">
+                        <h3>Vista previa de tu firma</h3>
+                        <img id="preview-image" alt="Vista previa de la firma">
+                    </div>
+
+                    <div class="mensaje-exito" id="mensaje">
+                        ✅ ¡Firma guardada correctamente! Revisa tu carpeta de descargas.
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- 👇 Logo secundario en el footer (opcional) 👇 -->
+        <img src="logoSalesianosWeb.png" alt="Salesianos" class="footer-logo">
+        <p>© 2024 <a href="https://www.salesianos-zaragoza.com" target="_blank">Salesianos Zaragoza</a> - Todos los derechos reservados</p>
+    </footer>
 
     <script>
         // Configuración del canvas
@@ -204,20 +442,41 @@
 
         // Configuración del trazo
         ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        // Funciones de dibujo para ratón
+        // Funciones auxiliares para obtener coordenadas correctas
+        function obtenerCoordenadas(e, tipo) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            if (tipo === 'mouse') {
+                return {
+                    x: (e.clientX - rect.left) * scaleX,
+                    y: (e.clientY - rect.top) * scaleY
+                };
+            } else if (tipo === 'touch') {
+                return {
+                    x: (e.touches[0].clientX - rect.left) * scaleX,
+                    y: (e.touches[0].clientY - rect.top) * scaleY
+                };
+            }
+        }
+
+        // Eventos para ratón
         canvas.addEventListener('mousedown', (e) => {
             dibujando = true;
+            const coords = obtenerCoordenadas(e, 'mouse');
             ctx.beginPath();
-            ctx.moveTo(e.offsetX, e.offsetY);
+            ctx.moveTo(coords.x, coords.y);
         });
 
         canvas.addEventListener('mousemove', (e) => {
             if (!dibujando) return;
-            ctx.lineTo(e.offsetX, e.offsetY);
+            const coords = obtenerCoordenadas(e, 'mouse');
+            ctx.lineTo(coords.x, coords.y);
             ctx.stroke();
         });
 
@@ -229,22 +488,20 @@
             dibujando = false;
         });
 
-        // Funciones de dibujo para táctil
+        // Eventos para táctil
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             dibujando = true;
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
+            const coords = obtenerCoordenadas(e, 'touch');
             ctx.beginPath();
-            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.moveTo(coords.x, coords.y);
         });
 
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
             if (!dibujando) return;
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            const coords = obtenerCoordenadas(e, 'touch');
+            ctx.lineTo(coords.x, coords.y);
             ctx.stroke();
         });
 
@@ -262,6 +519,23 @@
 
         // Botón descargar
         document.getElementById('descargar').addEventListener('click', () => {
+            // Verificar si hay contenido en el canvas
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            let hayContenido = false;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] !== 0) {
+                    hayContenido = true;
+                    break;
+                }
+            }
+            
+            if (!hayContenido) {
+                alert('⚠️ Por favor, firma antes de descargar');
+                return;
+            }
+            
             // Crear un canvas temporal con fondo blanco
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = canvas.width;
@@ -286,25 +560,62 @@
                 // Descargar
                 const link = document.createElement('a');
                 const timestamp = new Date().getTime();
-                link.download = `firma_${timestamp}.png`;
+                link.download = `firma_salesianos_${timestamp}.png`;
                 link.href = url;
                 link.click();
                 
                 // Mostrar mensaje de éxito
-                document.getElementById('mensaje').classList.add('show');
+                const mensaje = document.getElementById('mensaje');
+                mensaje.classList.add('show');
+                
+                // Ocultar mensaje después de 5 segundos
+                setTimeout(() => {
+                    mensaje.classList.remove('show');
+                }, 5000);
                 
                 // Limpiar URL después de un tiempo
                 setTimeout(() => URL.revokeObjectURL(url), 1000);
             }, 'image/png');
         });
 
-        // Ajustar canvas en dispositivos móviles
+        // Ajustar canvas en dispositivos móviles manteniendo la calidad
         function ajustarCanvas() {
             const container = document.querySelector('.canvas-container');
-            const containerWidth = container.clientWidth - 6; // Restar el borde
-            if (containerWidth < 700) {
-                canvas.width = containerWidth;
-                canvas.height = Math.floor(containerWidth * 0.43); // Mantener proporción
+            const containerWidth = container.clientWidth - 6;
+            
+            // Guardar el contenido actual si existe
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            if (window.innerWidth < 1024) {
+                // Móvil y tablet - pantalla completa
+                const newWidth = Math.min(containerWidth, 700);
+                const newHeight = Math.floor(newWidth * 0.36); // Proporción más compacta
+                
+                if (canvas.width !== newWidth) {
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    
+                    // Restaurar configuración del trazo
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            } else {
+                // Desktop - ajustado al nuevo layout
+                const newWidth = Math.min(containerWidth, 800);
+                const newHeight = 280;
+                
+                if (canvas.width !== newWidth || canvas.height !== newHeight) {
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    
+                    // Restaurar configuración del trazo
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
             }
         }
 
